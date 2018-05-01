@@ -12,7 +12,18 @@ def train_perceptron(data_file):
     # Read in train data
     X,y = read_csv(data_file)
 
+    # TODO Train Perceptron
+    # Initialize Weights Randomly
+    # Iterate n times
+        # Calculate error
+        # Update vectors with error * input * learning_rate
+
+
     # TODO Output perceptron model
+    perceptron_model_name = 'perceptron_model.csv'
+    perceptron_model_file = open(perceptron_model_name,'w')
+    print('Perceptron Model created with name',
+        perceptron_model_name)
 
 
 '''
@@ -26,6 +37,8 @@ def test_perceptron(data_file):
 
     # Read in test data
     X,y = read_csv(data_file)
+
+    # TODO test
 
 
 # Parse CSV into X and y
