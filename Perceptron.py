@@ -1,4 +1,6 @@
 from sys import argv
+import csv
+import numpy as np
 
 '''
 Trains on the given csv
@@ -6,6 +8,11 @@ Outputs a perceptron model
 '''
 def train_perceptron(data_file):
     print('Training...')
+
+    # Read in train data
+    X,y = read_csv(data_file)
+
+    # TODO Output perceptron model
 
 
 '''
@@ -15,11 +22,33 @@ Reads latest generated perceptron model
 def test_perceptron(data_file):
     print('Testing...')
 
+    # TODO check that a perceptron model exists
+
+    # Read in test data
+    X,y = read_csv(data_file)
+
+
+# Parse CSV into X and y
+def read_csv(data_file):
+    csv_reader = csv.reader(data_file)
+    labels = []
+    features = []
+    for row in csv_reader:
+        labels.append(row[0])
+        features.append(row[1:])
+    X = np.matrix(features)
+    y = np.matrix(labels)
+    print('File Read')
+    return X,y
+
 
 '''
-How To Run
-python -train train_data.csv
-python -test train_data.csv
+How To Run:
+python perceptron.py -train train_data.csv
+python perceptron.py -test train_data.csv
+
+Assumes that first column is the labels and
+that the train or test csv has no headers
 '''
 if __name__ == '__main__':
 
