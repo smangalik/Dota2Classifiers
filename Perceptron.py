@@ -94,21 +94,41 @@ def test_perceptron(data_file):
         x_i = X[i]
         y_pred[i] = np.dot(w, x_i.T)
         y_pred[i] = activation(y_pred[i])
-
-    print('y_actual',y_actual)
-    print('y_pred',y_pred)
-
+    
+    #print(set(y_pred))
+    #print('y_actual',y_actual)
+    #print('y_pred',y_pred)
+    
+    # 1 is YES and -1 is NO
+    TP = 0
+    TN = 0
+    FP = 0
+    FN = 0
+    ALL = len(y_pred)
     # Test 100 samples
-    for i in range(100): print('y_actual',y_actual[i],'y_pred',y_pred[i])
+    for i in range(len(y_pred)): 
+        if y_pred[i] == 1 and y_actual[i] == 1:
+            TP += 1
+        elif y_pred[i] == -1 and y_actual[i] == -1:
+            TN += 1
+        elif y_pred[i] == 1 and y_actual[i] == -1:
+            FP += 1
+        else:
+            FN += 1
 
     # TODO Calculate Accuracy
-
+    accuracy = (TP + TN) /  ALL
     # TODO Calculate Recall
-
+    recall = TP/(TP + FN)
     # TODO Calculate Precision
-
+    precision = TP/(TP + FP)
     # TODO Calculate F1
+    F1 = 2*(precision * recall)/(precision + recall)
 
+    print('Accuracy:', accuracy)
+    print('Recall:', recall)
+    print('Precision:', precision)
+    print('F1:', F1)
 
 # Parse CSV into X and y
 def read_csv(data_file):
@@ -134,7 +154,8 @@ weights and the inputs and returns a list with the predicted outputs.
 '''
 
 def activation(result):
-    return np.tanh(np.asscalar(result))
+    pred  = np.tanh(np.asscalar(result))
+    return int(round(pred))
     #return 1/(1 + np.exp(-result[0]))
 
 '''
