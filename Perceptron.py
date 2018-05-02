@@ -11,14 +11,16 @@ def train_perceptron(data_file):
 
     # Read in train data
     X,y = read_csv(data_file)
+    X = min_max_normalize(X)
     # print(X.shape)
     # print(y.shape)
+
     # Initial values
     w  = np.asmatrix(np.random.rand(X.shape[1]))
                                     # Weights randomized at the beggining
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
     lr = 0.01                       # Learning rate
-    epochs = 2                    # Number of iterations
+    epochs = 100                    # Number of iterations
     print('Training with ' + str(epochs), ' iterations...')
     ###################################
     #print('These are the labels')
@@ -37,7 +39,7 @@ def train_perceptron(data_file):
             # Calculate error
 
             prediction = np.dot(w,x_i.T)
-            error = y_i - activation(prediction)
+            error = y_i - activation(prediction) # TODO improve
             # Update vectors with error * input * learning_rate
 
 
@@ -56,7 +58,6 @@ def train_perceptron(data_file):
     print('Final Weights',w,w.shape)
 
     # TODO Output perceptron model
-    perceptron_model_name = 'perceptron_model.csv'
     perceptron_model_file = open(perceptron_model_name,'w')
 
     for weight in np.array(w)[0]:
@@ -74,11 +75,39 @@ def test_perceptron(data_file):
     print('Testing...')
 
     # TODO check that a perceptron model exists
+    w = []
+    w_file = open(perceptron_model_name,'r')
+    for line in w_file:
+        if line == '\n':
+            continue
+        w.append( float(line) )
+    w = np.array(w)
 
     # Read in test data
-    X,y = read_csv(data_file)
+    X,y_actual = read_csv(data_file)
+    X = min_max_normalize(X)
 
-    # TODO test
+    y_pred = np.ones(len(y_actual))
+
+    # Predictions
+    for i in range(len(X)):
+        x_i = X[i]
+        y_pred[i] = np.dot(w, x_i.T)
+        y_pred[i] = activation(y_pred[i])
+
+    print('y_actual',y_actual)
+    print('y_pred',y_pred)
+
+    # Test 100 samples
+    for i in range(100): print('y_actual',y_actual[i],'y_pred',y_pred[i])
+
+    # TODO Calculate Accuracy
+
+    # TODO Calculate Recall
+
+    # TODO Calculate Precision
+
+    # TODO Calculate F1
 
 
 # Parse CSV into X and y
@@ -93,6 +122,11 @@ def read_csv(data_file):
     y = np.array(labels)
     print('File Read')
     return X,y
+
+# TODO Normalize Columns by Min and Mix
+def min_max_normalize(data):
+    return data
+
 
 '''
 Activation funtion for the perceptron, takes the inner product of the
@@ -121,6 +155,8 @@ if __name__ == '__main__':
 
     test_train = test_train.replace('-','').lower()
     data_file = open(file_str,'r')
+
+    perceptron_model_name = 'perceptron_model.csv'
 
     if test_train == 'train':
         train_perceptron(data_file)
