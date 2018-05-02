@@ -11,21 +11,58 @@ def train_perceptron(data_file):
 
     # Read in train data
     X,y = read_csv(data_file)
-
-    # TODO Train Perceptron
+    print(X.shape)
+    print(y.shape)
+    # Initial values
+    w  = np.asmatrix(np.random.rand(X.shape[1])) 
+                                    # Weights randomized at the beggining
+    errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
+    lr = 0.01                       # Learning rate
+    epochs = 100                    # Number of iterations
+    print('Training with ' + str(epochs), ' iterations...')
+    ###################################
+    #print('These are the labels')
+    #print(y) 
+    ###################################
+    
     # Initialize Weights Randomly
     # Iterate n times
-        # Calculate error
-        # Update vectors with error * input * learning_rate
+    for epoch in range(epochs):
 
+        print('Epoch ' + str(epoch + 1) + ', current weights:')
+        print(w)
+
+        for i in range(len(X)):
+            #print(i)
+            x = X[i,:]
+            # Calculate error
+
+            ###################################
+            #print('current imputs')
+            #print(x)
+            #print('current weights')
+            #print(w)
+            ###################################
+
+            result = np.dot(w,x.T)
+            error = y - activation(result)
+            # Update vectors with error * input * learning_rate
+            w += lr * error * X
 
     # TODO Output perceptron model
     perceptron_model_name = 'perceptron_model.csv'
     perceptron_model_file = open(perceptron_model_name,'w')
+ 
+    weights = ''
+    for i in w:
+        weights += str(i) + ','
+    weights[len(weights) - 1] = ''
+    perceptron_model_file.write(weights)
+ 
     print('Perceptron Model created with name',
         perceptron_model_name)
 
-
+    perceptron_model_file.close()
 '''
 Tests on the given csv
 Reads latest generated perceptron model
@@ -47,13 +84,21 @@ def read_csv(data_file):
     labels = []
     features = []
     for row in csv_reader:
-        labels.append(row[0])
-        features.append(row[1:])
+        labels.append(float(row[0]))
+        features.append([float(i) for i in row[1:]])
     X = np.matrix(features)
     y = np.matrix(labels)
     print('File Read')
     return X,y
 
+'''
+Activation funtion for the perceptron, takes the inner product of the 
+weights and the inputs and returns a list with the predicted outputs.
+'''
+
+def activation(result):
+    return np.tanh(result[0])
+    #return 1/(1 + np.exp(-result[0]))
 
 '''
 How To Run:
