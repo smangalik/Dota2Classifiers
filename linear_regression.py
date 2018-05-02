@@ -4,13 +4,20 @@ import numpy as np
 
 '''
 Trains on the given csv
-Outputs a perceptron model
+Outputs a regression model
 '''
 def train_regression(data_file):
     print('Training...')
 
     # Read in train data
     X,y = read_csv(data_file)
+
+    # TODO train
+    # Select randomized initial linear boundary
+    # Calculate Squared Loss
+    # Adjust parameters of linear boundary
+    # Repeat until amount of loss scales down
+    # Use a 0-1 activation to decide final labels
 
     # TODO Output regression model
     regression_model_name = 'regression_model.csv'
@@ -22,7 +29,7 @@ def train_regression(data_file):
     regression_model_file.close()
 '''
 Tests on the given csv
-Reads latest generated perceptron model
+Reads latest generated regression model
 '''
 def test_regression(data_file):
     print('Testing...')
