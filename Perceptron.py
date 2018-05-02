@@ -34,7 +34,6 @@ def train_perceptron(data_file):
 
         for sample in X:
             #print(i)
-            x = sample
             # Calculate error
 
             ###################################
@@ -44,10 +43,10 @@ def train_perceptron(data_file):
             #print(w)
             ###################################
 
-            result = np.dot(w,x.T)
-            error = y - activation(result)
+            prediction = np.dot(w,sample.T)
+            error = y - activation(prediction)
             # Update vectors with error * input * learning_rate
-            w += (lr * error * X)
+            w += (lr * error * sample)
 
     # TODO Output perceptron model
     perceptron_model_name = 'perceptron_model.csv'
