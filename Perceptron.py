@@ -14,7 +14,7 @@ def train_perceptron(data_file):
     print(X.shape)
     print(y.shape)
     # Initial values
-    w  = np.asmatrix(np.random.rand(X.shape[1])) 
+    w  = np.asmatrix(np.random.rand(X.shape[1]))
                                     # Weights randomized at the beggining
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
     lr = 0.01                       # Learning rate
@@ -22,9 +22,9 @@ def train_perceptron(data_file):
     print('Training with ' + str(epochs), ' iterations...')
     ###################################
     #print('These are the labels')
-    #print(y) 
+    #print(y)
     ###################################
-    
+
     # Initialize Weights Randomly
     # Iterate n times
     for epoch in range(epochs):
@@ -32,9 +32,9 @@ def train_perceptron(data_file):
         print('Epoch ' + str(epoch + 1) + ', current weights:')
         print(w)
 
-        for i in range(len(X)):
+        for sample in X:
             #print(i)
-            x = X[i,:]
+            x = sample
             # Calculate error
 
             ###################################
@@ -47,20 +47,19 @@ def train_perceptron(data_file):
             result = np.dot(w,x.T)
             error = y - activation(result)
             # Update vectors with error * input * learning_rate
-            w += lr * error * X
+            w += (lr * error * X)
 
     # TODO Output perceptron model
     perceptron_model_name = 'perceptron_model.csv'
     perceptron_model_file = open(perceptron_model_name,'w')
- 
+
     weights = ''
     for i in w:
         weights += str(i) + ','
     weights[len(weights) - 1] = ''
     perceptron_model_file.write(weights)
- 
-    print('Perceptron Model created with name',
-        perceptron_model_name)
+
+    print('Perceptron Model created with name',perceptron_model_name)
 
     perceptron_model_file.close()
 '''
@@ -92,7 +91,7 @@ def read_csv(data_file):
     return X,y
 
 '''
-Activation funtion for the perceptron, takes the inner product of the 
+Activation funtion for the perceptron, takes the inner product of the
 weights and the inputs and returns a list with the predicted outputs.
 '''
 
