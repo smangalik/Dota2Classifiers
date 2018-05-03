@@ -27,17 +27,16 @@ def train_perceptron(data_file):
     # Iterate n times
     for epoch in range(epochs):
 
-        # TODO Vectorize
-        for i in range(len(X)):
-            x_i = X[i]
-            y_i = y[i]
+        # Calculate Error
+        predictions = np.array( np.dot(w,X.T) )
+        predictions = predictions[0]
 
-            # Calculate Error
-            prediction = np.dot(w,x_i.T)
-            error = y_i - activation(prediction)
+        # Update Weights
+        for i in range(len(errors)):
 
-            # Update Weights
-            w += (lr * error * x_i)
+            predictions[i] = activation(predictions[i])
+            error = y[i] - predictions[i]
+            w += (lr * error * X[i])
 
         if epoch % 10 == 0:
             print('Epoch:',epoch)
