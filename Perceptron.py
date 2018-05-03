@@ -20,37 +20,27 @@ def train_perceptron(data_file):
                                     # Weights randomized at the beggining
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
     lr = 0.01                       # Learning rate
-    epochs = 100                    # Number of iterations
+    epochs = 101                    # Number of iterations
     print('Training with ' + str(epochs), ' iterations...')
 
     # Initialize Weights Randomly
     # Iterate n times
     for epoch in range(epochs):
 
+        # TODO Vectorize
         for i in range(len(X)):
-
             x_i = X[i]
             y_i = y[i]
-            #print(i)
-            # Calculate error
 
+            # Calculate Error
             prediction = np.dot(w,x_i.T)
-            error = y_i - activation(prediction) # TODO improve
-            # Update vectors with error * input * learning_rate
+            error = y_i - activation(prediction)
 
-            # print('X',X.shape)
-            # print('y',y.shape)
-            # print('x_i',x_i.shape)
-            # print('y_i',y_i.shape)
-            # print('w',w.shape)
-            # print('error',error.shape)
-            # print('prediction',prediction.shape)
-
+            # Update Weights
             w += (lr * error * x_i)
 
-        print('Epoch:',epoch)
-
-    print('Final Weights',w,w.shape)
+        if epoch % 10 == 0:
+            print('Epoch:',epoch)
 
     # Output perceptron model
     perceptron_model_file = open(perceptron_model_name,'w')
@@ -84,11 +74,15 @@ def test_perceptron(data_file):
 
     y_pred = np.ones(len(y_actual))
 
+    # TODO k-fold validation
+
     # Predictions
     for i in range(len(X)):
         x_i = X[i]
         y_pred[i] = np.dot(w, x_i.T)
-        y_pred[i] = activation(y_pred[i])
+        y_pred[i] = np.sign(activation(y_pred[i]))
+
+    # print('Set of Guesses:',set(y_pred))
 
     print('y_actual',y_actual)
     print('y_pred',y_pred)
@@ -134,9 +128,18 @@ def read_csv(data_file):
     print('File Read')
     return X,y
 
-# TODO Normalize Columns by Min and Mix
+# Normalize Columns by Min and Mix
 def min_max_normalize(data):
-    return data
+    normalized = data.T
+    for i in range(len(normalized)):
+        column = normalized[i]
+        if np.min(column) == -1 and np.max(column) == 1:
+            continue
+        if np.min(column) == 0 and np.max(column) == 0:
+            continue
+        column = 2 * (column - np.min(column))/(np.max(column)-np.min(column)) - 1
+        normalized[i] = column
+    return normalized.T
 
 
 '''
@@ -145,8 +148,7 @@ weights and the inputs and returns a list with the predicted outputs.
 '''
 
 def activation(result):
-    pred = abs(np.tanh(np.asscalar(result)))
-    return int(round(pred))
+    return np.tanh(np.asscalar(result))
     #return 1/(1 + np.exp(-result[0]))
 
 '''

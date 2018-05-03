@@ -14,8 +14,6 @@ def train_regression(data_file):
     # Read in train data
     X,y = read_csv(data_file)
 
-    # TODO Consider Normalizing
-
     # train
     A = np.dot(X.T, X)
     b = np.dot(X.T, y.T)
@@ -64,6 +62,8 @@ def test_regression(data_file):
 
     y_actual = y_actual.T
     y_pred = np.ones(len(y_actual))
+
+    # TODO k-fold validation
 
     # Predictions
     for i in range(len(X)):
@@ -127,9 +127,11 @@ def activation(result):
     return np.sign(result)
 
 
-# TODO (Rewrite) Check if Singular
+# Check if Singular
 def is_singular(matrix):
-    return matrix.shape[0] == matrix.shape[1] and np.linalg.matrix_rank(matrix) == matrix.shape[0]
+    symmetric = (matrix.shape[0] == matrix.shape[1])
+    rank_shape = (np.linalg.matrix_rank(matrix) == matrix.shape[0])
+    return symmetric and rank_shape
 
 '''
 How To Run:
