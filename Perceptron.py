@@ -22,10 +22,6 @@ def train_perceptron(data_file):
     lr = 0.01                       # Learning rate
     epochs = 100                    # Number of iterations
     print('Training with ' + str(epochs), ' iterations...')
-    ###################################
-    #print('These are the labels')
-    #print(y)
-    ###################################
 
     # Initialize Weights Randomly
     # Iterate n times
@@ -42,7 +38,6 @@ def train_perceptron(data_file):
             error = y_i - activation(prediction) # TODO improve
             # Update vectors with error * input * learning_rate
 
-
             # print('X',X.shape)
             # print('y',y.shape)
             # print('x_i',x_i.shape)
@@ -57,7 +52,7 @@ def train_perceptron(data_file):
 
     print('Final Weights',w,w.shape)
 
-    # TODO Output perceptron model
+    # Output perceptron model
     perceptron_model_file = open(perceptron_model_name,'w')
 
     for weight in np.array(w)[0]:
@@ -74,7 +69,7 @@ Reads latest generated perceptron model
 def test_perceptron(data_file):
     print('Testing...')
 
-    # TODO check that a perceptron model exists
+    # Read in perceptron model
     w = []
     w_file = open(perceptron_model_name,'r')
     for line in w_file:
@@ -94,19 +89,14 @@ def test_perceptron(data_file):
         x_i = X[i]
         y_pred[i] = np.dot(w, x_i.T)
         y_pred[i] = activation(y_pred[i])
-    
-    #print(set(y_pred))
-    #print('y_actual',y_actual)
-    #print('y_pred',y_pred)
-    
+
+    print('y_actual',y_actual)
+    print('y_pred',y_pred)
+
     # 1 is YES and -1 is NO
-    TP = 0
-    TN = 0
-    FP = 0
-    FN = 0
+    TP,TN,FP,FN = 0,0,0,0
     ALL = len(y_pred)
-    # Test 100 samples
-    for i in range(len(y_pred)): 
+    for i in range(len(y_pred)):
         if y_pred[i] == 1 and y_actual[i] == 1:
             TP += 1
         elif y_pred[i] == -1 and y_actual[i] == -1:
@@ -116,19 +106,20 @@ def test_perceptron(data_file):
         else:
             FN += 1
 
-    # TODO Calculate Accuracy
+    # Calculate Accuracy
     accuracy = (TP + TN) /  ALL
-    # TODO Calculate Recall
+    # Calculate Recall
     recall = TP/(TP + FN)
-    # TODO Calculate Precision
+    # Calculate Precision
     precision = TP/(TP + FP)
-    # TODO Calculate F1
+    # Calculate F1
     F1 = 2*(precision * recall)/(precision + recall)
 
     print('Accuracy:', accuracy)
     print('Recall:', recall)
     print('Precision:', precision)
     print('F1:', F1)
+
 
 # Parse CSV into X and y
 def read_csv(data_file):
@@ -154,7 +145,7 @@ weights and the inputs and returns a list with the predicted outputs.
 '''
 
 def activation(result):
-    pred  = np.tanh(np.asscalar(result))
+    pred = abs(np.tanh(np.asscalar(result)))
     return int(round(pred))
     #return 1/(1 + np.exp(-result[0]))
 

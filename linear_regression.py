@@ -50,14 +50,57 @@ Reads latest generated regression model
 def test_regression(data_file):
     print('Testing...')
 
-    # TODO check that a regression model exists
-
-    # TODO Use a 0-1 activation to decide final labels
+    # Read in perceptron model
+    w = []
+    w_file = open(regression_model_name,'r')
+    for line in w_file:
+        if line == '\n':
+            continue
+        w.append( float(line) )
+    w = np.array(w)
 
     # Read in test data
-    X,y = read_csv(data_file)
+    X,y_actual = read_csv(data_file)
 
-    # TODO test
+    y_actual = y_actual.T
+    y_pred = np.ones(len(y_actual))
+
+    # Predictions
+    for i in range(len(X)):
+        x_i = X[i]
+        y_pred[i] = np.dot(w, x_i.T)
+        y_pred[i] = activation(y_pred[i])
+
+    print('y_actual',y_actual.T)
+    print('y_pred',y_pred)
+
+    # 1 is YES and -1 is NO
+    TP,TN,FP,FN = 0,0,0,0
+    ALL = len(y_pred)
+    for i in range(len(y_pred)):
+        if y_pred[i] == 1 and y_actual[i] == 1:
+            TP += 1
+        elif y_pred[i] == -1 and y_actual[i] == -1:
+            TN += 1
+        elif y_pred[i] == 1 and y_actual[i] == -1:
+            FP += 1
+        else:
+            FN += 1
+
+    # Calculate Accuracy
+    accuracy = (TP + TN) /  ALL
+    # Calculate Recall
+    recall = TP/(TP + FN)
+    # Calculate Precision
+    precision = TP/(TP + FP)
+    # Calculate F1
+    F1 = 2*(precision * recall)/(precision + recall)
+
+    print('Accuracy:', accuracy)
+    print('Recall:', recall)
+    print('Precision:', precision)
+    print('F1:', F1)
+
 
 
 # Parse CSV into X and y
