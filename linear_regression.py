@@ -1,6 +1,7 @@
 from sys import argv
 import csv
 import numpy as np
+import random
 
 '''
 Trains on the given csv
@@ -54,6 +55,16 @@ def read_csv(data_file):
     y = np.matrix(labels)
     print('File Read')
     return X,y
+
+'''
+Activation funtion for the regression
+For Binary Classification this is the signum function
+'''
+def activation(result):
+    if result == 0: # Random guess if 0
+        classes = [-1,1]
+        return classes[random.randint(len(classes))]
+    return np.sign(result)
 
 '''
 How To Run:
