@@ -19,8 +19,8 @@ def train_perceptron(data_file):
     w  = np.asmatrix(np.random.rand(X.shape[1]))
                                     # Weights randomized at the beggining
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
-    lr = 0.01                       # Learning rate
-    epochs = 101                    # Number of iterations
+    lr = 0.001                       # Learning rate
+    epochs = 10                    # Number of iterations
     print('Training with ' + str(epochs), ' iterations...')
 
     # Initialize Weights Randomly
@@ -30,13 +30,16 @@ def train_perceptron(data_file):
         # Calculate Error
         predictions = np.array( np.dot(w,X.T) )
         predictions = predictions[0]
-
+        ac_pred = np.zeros(len(predictions))
+        np.tanh(predictions, out=ac_pred)
+        errors = y - ac_pred
+#        print(ac_pred)       
         # Update Weights
-        for i in range(len(errors)):
+        for i in range(len(X)):
 
-            predictions[i] = activation(predictions[i])
-            error = y[i] - predictions[i]
-            w += (lr * error * X[i])
+#            predictions[i] = activation(predictions[i])
+#            error = y[i] - predictions[i]
+            w += (lr * errors[i] * X[i])
 
         if epoch % 10 == 0:
             print('Epoch:',epoch)
