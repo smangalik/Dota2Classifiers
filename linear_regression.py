@@ -9,7 +9,7 @@ Trains on the given csv
 Outputs a regression model
 '''
 def train_regression(data_file):
-    print('Training...')
+    print('Training... ', end='')
 
     # Read in train data
     X,y = read_csv(data_file)
@@ -46,7 +46,7 @@ Tests on the given csv
 Reads latest generated regression model
 '''
 def test_regression(data_file):
-    print('Testing...')
+    print('Testing... ', end='')
 
     # Read in perceptron model
     w = []
@@ -70,6 +70,8 @@ def test_regression(data_file):
         x_i = X[i]
         y_pred[i] = np.dot(w, x_i.T)
         y_pred[i] = activation(y_pred[i])
+
+    print('Guess Counts:',collections.Counter(y_pred))
 
     print('y_actual',y_actual.T)
     print('y_pred',y_pred)

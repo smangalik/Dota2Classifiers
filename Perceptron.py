@@ -1,13 +1,14 @@
 from sys import argv
 import csv
 import numpy as np
+import collections
 
 '''
 Trains on the given csv
 Outputs a perceptron model
 '''
 def train_perceptron(data_file):
-    print('Training...')
+    print('Training... ',end='')
 
     # Read in train data
     X,y = read_csv(data_file)
@@ -19,9 +20,10 @@ def train_perceptron(data_file):
     w  = np.asmatrix(np.random.rand(X.shape[1]))
                                     # Weights randomized at the beggining
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
-    lr = 0.01                       # Learning rate
-    epochs = 101                    # Number of iterations
-    print('Training with ' + str(epochs), ' iterations...')
+    lr = 0.001                      # Learning rate
+    epochs = 101                     # Number of iterations
+    print('Training with ' + str(epochs),
+          ' epochs, learning rate is ' + str(lr))
 
     # Initialize Weights Randomly
     # Iterate n times
@@ -39,7 +41,7 @@ def train_perceptron(data_file):
             # Update Weights
             w += (lr * error * x_i)
 
-        if epoch % 10 == 0:
+        if epoch % 5 == 0:
             print('Epoch:',epoch)
 
     # Output perceptron model
@@ -54,13 +56,13 @@ def train_perceptron(data_file):
     perceptron_model_file.close()
 
 
-    
+
 '''
 Tests on the given csv
 Reads latest generated perceptron model
 '''
 def test_perceptron(data_file):
-    print('Testing...')
+    print('Testing... ', end='')
 
     # Read in perceptron model
     w = []
@@ -85,7 +87,7 @@ def test_perceptron(data_file):
         y_pred[i] = np.dot(w, x_i.T)
         y_pred[i] = np.sign(activation(y_pred[i]))
 
-    print('Set of Guesses:',set(y_pred))
+    print('Guess Counts:',collections.Counter(y_pred))
 
     print('y_actual',y_actual)
     print('y_pred',y_pred)
