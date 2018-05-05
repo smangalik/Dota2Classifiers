@@ -180,5 +180,7 @@ if __name__ == '__main__':
         train_perceptron(data_file)
     elif test_train == 'test':
         test_perceptron(data_file)
+    elif test_train == 'validate':
+        test_regression(data_file)
     else:
         print('Expected "train" or "test", got ' + test_train)

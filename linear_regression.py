@@ -14,6 +14,9 @@ def train_regression(data_file):
     # Read in train data
     X,y = read_csv(data_file)
 
+    x0 = np.ones(len(y))
+    X = np.array(x0,X).T
+
     # train
     A = np.dot(X.T, X)
     b = np.dot(X.T, y.T)
@@ -159,6 +162,8 @@ if __name__ == '__main__':
     if test_train == 'train':
         train_regression(data_file)
     elif test_train == 'test':
+        test_regression(data_file)
+    elif test_train == 'validate':
         test_regression(data_file)
     else:
         print('Expected "train" or "test", got ' + test_train)

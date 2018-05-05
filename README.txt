@@ -4,9 +4,11 @@ NAME
 
 SYNOPSIS
   python perceptron.py -train train_data.csv
+  python perceptron.py -validate train_data.csv
   python perceptron.py -test test_data.csv
 
   python linear_regression.py -train train_data.csv
+  python linear_regression.py -validate train_data.csv
   python linear_regression.py -test test_data.csv
 
 DESCRIPTION
@@ -19,3 +21,6 @@ DESCRIPTION
     -test
       reads a file with the default model file name.
       Prints out Accuracy, Precision, Recall, and F1
+    -validate
+      Runs k-fold (default k=5) validation and returns
+      individual and mean accuracy for each run
