@@ -52,6 +52,9 @@ def train_perceptron(data_file):
     print('Perceptron Model created with name',perceptron_model_name)
 
     perceptron_model_file.close()
+
+
+    
 '''
 Tests on the given csv
 Reads latest generated perceptron model
@@ -82,7 +85,7 @@ def test_perceptron(data_file):
         y_pred[i] = np.dot(w, x_i.T)
         y_pred[i] = np.sign(activation(y_pred[i]))
 
-    # print('Set of Guesses:',set(y_pred))
+    print('Set of Guesses:',set(y_pred))
 
     print('y_actual',y_actual)
     print('y_pred',y_pred)
