@@ -21,7 +21,7 @@ def train_perceptron(data_file):
                                     # Weights randomized at the beggining
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
     lr = 0.001                      # Learning rate
-    epochs = 101                     # Number of iterations
+    epochs = 11                     # Number of iterations
     print('Training with ' + str(epochs),
           ' epochs, learning rate is ' + str(lr))
 
@@ -29,7 +29,6 @@ def train_perceptron(data_file):
     # Iterate n times
     for epoch in range(epochs):
 
-        # TODO Vectorize
         for i in range(len(X)):
             x_i = X[i]
             y_i = y[i]
