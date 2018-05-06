@@ -119,6 +119,21 @@ def test_perceptron(data_file):
     print('F1:', F1)
 
 
+
+'''
+Validates on the given train csv
+'''
+def validate_perceptron(data_file):
+    print('Validating... ',end='')
+
+    # Number of Folds
+    k = 5
+
+    # Read in train data
+    X,y = read_csv(data_file)
+
+
+
 # Parse CSV into X and y
 def read_csv(data_file):
     csv_reader = csv.reader(data_file)
@@ -168,19 +183,19 @@ if __name__ == '__main__':
     if len(argv) != 3:
         print('Invalid number of parameters')
 
-    test_train = argv[1]
+    command = argv[1]
     file_str = argv[2]
 
-    test_train = test_train.replace('-','').lower()
+    command = command.replace('-','').lower()
     data_file = open(file_str,'r')
 
     perceptron_model_name = 'perceptron_model.csv'
 
-    if test_train == 'train':
+    if command == 'train':
         train_perceptron(data_file)
-    elif test_train == 'test':
+    elif command == 'test':
         test_perceptron(data_file)
-    elif test_train == 'validate':
-        test_regression(data_file)
+    elif command == 'validate':
+        validate_perceptron(data_file)
     else:
-        print('Expected "train" or "test", got ' + test_train)
+        print('Expected "train" or "test", got ' + command)

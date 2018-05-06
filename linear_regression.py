@@ -53,7 +53,7 @@ Reads latest generated regression model
 def test_regression(data_file):
     print('Testing... ', end='')
 
-    # Read in perceptron model
+    # Read in regression model
     w = []
     w_file = open(regression_model_name,'r')
     for line in w_file:
@@ -114,6 +114,20 @@ def test_regression(data_file):
 
 
 
+'''
+Validates on the given train csv
+'''
+def validate_regression(data_file):
+    print('Validating... ',end='')
+
+    # Number of Folds
+    k = 5
+
+    # Read in train data
+    X,y = read_csv(data_file)
+
+
+
 # Parse CSV into X and y
 def read_csv(data_file):
     csv_reader = csv.reader(data_file)
@@ -157,19 +171,19 @@ if __name__ == '__main__':
     if len(argv) != 3:
         print('Invalid number of parameters')
 
-    test_train = argv[1]
+    command = argv[1]
     file_str = argv[2]
 
     regression_model_name = 'regression_model.csv'
 
-    test_train = test_train.replace('-','').lower()
+    command = command.replace('-','').lower()
     data_file = open(file_str,'r')
 
-    if test_train == 'train':
+    if command == 'train':
         train_regression(data_file)
-    elif test_train == 'test':
+    elif command == 'test':
         test_regression(data_file)
-    elif test_train == 'validate':
-        test_regression(data_file)
+    elif command == 'validate':
+        validate_regression(data_file)
     else:
-        print('Expected "train" or "test", got ' + test_train)
+        print('Expected "train" or "test", got ' + command)
