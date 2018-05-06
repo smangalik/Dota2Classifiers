@@ -14,8 +14,9 @@ def train_regression(data_file):
     # Read in train data
     X,y = read_csv(data_file)
 
-    x0 = np.ones(len(y))
-    X = np.array(x0,X).T
+    # Add a bias
+    bias = np.ones(shape = y.shape)
+    #X = np.concatenate((X,bias.T),axis=1)
 
     # train
     A = np.dot(X.T, X)
