@@ -7,14 +7,11 @@ import collections
 Trains on the given csv
 Outputs a perceptron model
 '''
-def train_perceptron(data_file):
-    print('Training... ',end='')
+def train_perceptron(X,y,validate):
+    print('Training... ')
 
-    # Read in train data
-    X,y = read_csv(data_file)
+    # Normalize X
     X = min_max_normalize(X)
-    # print(X.shape)
-    # print(y.shape)
 
     # Initial values
     w  = np.asmatrix(np.random.rand(X.shape[1]))
@@ -22,8 +19,9 @@ def train_perceptron(data_file):
     errors = np.zeros(X.shape[1])   # Initialize a place holder for errors
     lr = 0.001                      # Learning rate
     epochs = 11                     # Number of iterations
-    print('Training with ' + str(epochs),
-          ' epochs, learning rate is ' + str(lr))
+    if not validate:
+        print('Training with ' + str(epochs),
+        ' epochs, learning rate is ' + str(lr))
 
     # Initialize Weights Randomly
     # Iterate n times
@@ -40,7 +38,7 @@ def train_perceptron(data_file):
             # Update Weights
             w += (lr * error * x_i)
 
-        if epoch % 5 == 0:
+        if epoch % 5 == 0 and not validate:
             print('Epoch:',epoch)
 
     # Output perceptron model
@@ -50,7 +48,8 @@ def train_perceptron(data_file):
         perceptron_model_file.write(str(weight))
         perceptron_model_file.write('\n')
 
-    print('Perceptron Model created with name',perceptron_model_name)
+    if not validate:
+        print('Perceptron Model created with name',perceptron_model_name)
 
     perceptron_model_file.close()
 
@@ -60,8 +59,8 @@ def train_perceptron(data_file):
 Tests on the given csv
 Reads latest generated perceptron model
 '''
-def test_perceptron(data_file):
-    print('Testing... ', end='')
+def test_perceptron(X,y_actual,validate):
+    print('Testing... ')
 
     # Read in perceptron model
     w = []
@@ -72,13 +71,10 @@ def test_perceptron(data_file):
         w.append( float(line) )
     w = np.array(w)
 
-    # Read in test data
-    X,y_actual = read_csv(data_file)
+    # Normalize X
     X = min_max_normalize(X)
 
     y_pred = np.ones(len(y_actual))
-
-    # TODO k-fold validation
 
     # Predictions
     for i in range(len(X)):
@@ -86,10 +82,10 @@ def test_perceptron(data_file):
         y_pred[i] = np.dot(w, x_i.T)
         y_pred[i] = np.sign(activation(y_pred[i]))
 
-    print('Guess Counts:',collections.Counter(y_pred))
-
-    print('y_actual',y_actual)
-    print('y_pred',y_pred)
+    if not validate:
+        print('Guess Counts:',collections.Counter(y_pred))
+        print('y_actual',y_actual)
+        print('y_pred',y_pred)
 
     # 1 is YES and -1 is NO
     TP,TN,FP,FN = 0,0,0,0
@@ -114,23 +110,41 @@ def test_perceptron(data_file):
     F1 = 2*(precision * recall)/(precision + recall)
 
     print('Accuracy:', accuracy)
-    print('Recall:', recall)
-    print('Precision:', precision)
     print('F1:', F1)
+
+    if not validate:
+        print('Recall:', recall)
+        print('Precision:', precision)
+
+    return accuracy,F1
 
 
 
 '''
 Validates on the given train csv
 '''
-def validate_perceptron(data_file):
-    print('Validating... ',end='')
+def validate_perceptron(X,y):
+    accuracies = []
+    F1s = []
 
-    # Number of Folds
-    k = 5
+    print('Validating... ')
 
-    # Read in train data
-    X,y = read_csv(data_file)
+    y = y.T
+    X_train = X[:int(len(X)/2)]
+    y_train = y[:int(len(y)/2)].T
+    X_test = X[int(len(X)/2):]
+    y_test = y[int(len(y)/2):].T
+
+    print('\nRun 1')
+    train_perceptron(X_train,y_train,True)
+    acc_1,F1_1 = test_perceptron(X_test,y_test,True)
+
+    print('\nRun 2')
+    train_perceptron(X_test,y_test,True)
+    acc_2,F1_2 = test_perceptron(X_train,y_train,True)
+
+    print('\nAverage Accuracy:', np.mean([acc_1,acc_2]))
+    print('Average F1:', np.mean([F1_1,F1_2]))
 
 
 
@@ -186,16 +200,20 @@ if __name__ == '__main__':
     command = argv[1]
     file_str = argv[2]
 
+    perceptron_model_name = 'perceptron_model.csv'
+
     command = command.replace('-','').lower()
     data_file = open(file_str,'r')
 
-    perceptron_model_name = 'perceptron_model.csv'
+    # Read in train data
+    X,y = read_csv(data_file)
 
     if command == 'train':
-        train_perceptron(data_file)
+        train_perceptron(X,y,False)
     elif command == 'test':
-        test_perceptron(data_file)
+        test_perceptron(X,y,False)
     elif command == 'validate':
-        validate_perceptron(data_file)
+        validate_perceptron(X,y)
     else:
-        print('Expected "train" or "test", got ' + command)
+        print('Expected "train" or "validate" or "test", got '
+        + command)

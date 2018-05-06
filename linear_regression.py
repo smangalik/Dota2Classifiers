@@ -113,7 +113,6 @@ def test_regression(X,y_actual,validate):
 Validates on the given train csv
 '''
 def validate_regression(X,y):
-
     accuracies = []
     F1s = []
 
