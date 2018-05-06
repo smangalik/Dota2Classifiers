@@ -9,11 +9,8 @@ import collections
 Trains on the given csv
 Outputs a regression model
 '''
-def train_regression(data_file):
-    print('Training... ', end='')
-
-    # Read in train data
-    X,y = read_csv(data_file)
+def train_regression(X,y,validate):
+    print('Training... ')
 
     # Add a bias
     bias = np.ones(shape = y.shape)
@@ -26,7 +23,6 @@ def train_regression(data_file):
     if is_singular(A): # A is singular
         w = np.dot(A.I, b)
     else:              # A is non-singular
-        print('A is non-singular')
         D, V = eig(A)
         D_plus = [1/d if d != 0 else 0.0 for d in list(D)]
         D_plus = np.diag(D_plus)
@@ -41,8 +37,9 @@ def train_regression(data_file):
         regression_model_file.write('\n')
     regression_model_file.close()
 
-    print('Regression Model created with name',
-        regression_model_name)
+    if not validate:
+        print('Regression Model created with name',
+            regression_model_name)
 
 
 
@@ -50,8 +47,8 @@ def train_regression(data_file):
 Tests on the given csv
 Reads latest generated regression model
 '''
-def test_regression(data_file):
-    print('Testing... ', end='')
+def test_regression(X,y_actual,validate):
+    print('Testing... ')
 
     # Read in regression model
     w = []
@@ -66,13 +63,8 @@ def test_regression(data_file):
     bias = w[-1]
     w = w[:-1]
 
-    # Read in test data
-    X,y_actual = read_csv(data_file)
-
     y_actual = y_actual.T
     y_pred = np.ones(len(y_actual))
-
-    # TODO k-fold validation
 
     # Predictions
     for i in range(len(X)):
@@ -80,10 +72,10 @@ def test_regression(data_file):
         y_pred[i] = np.dot(w, x_i.T) + bias
         y_pred[i] = activation(y_pred[i])
 
-    print('Guess Counts:',collections.Counter(y_pred))
-
-    print('y_actual',y_actual.T)
-    print('y_pred',y_pred)
+    if not validate:
+        print('Guess Counts:',collections.Counter(y_pred))
+        print('y_actual',y_actual.T)
+        print('y_pred',y_pred)
 
     # 1 is YES and -1 is NO
     TP,TN,FP,FN = 0,0,0,0
@@ -108,23 +100,41 @@ def test_regression(data_file):
     F1 = 2*(precision * recall)/(precision + recall)
 
     print('Accuracy:', accuracy)
-    print('Recall:', recall)
-    print('Precision:', precision)
     print('F1:', F1)
 
+    if not validate:
+        print('Recall:', recall)
+        print('Precision:', precision)
+
+    return accuracy,F1
 
 
 '''
 Validates on the given train csv
 '''
-def validate_regression(data_file):
-    print('Validating... ',end='')
+def validate_regression(X,y):
 
-    # Number of Folds
-    k = 5
+    accuracies = []
+    F1s = []
 
-    # Read in train data
-    X,y = read_csv(data_file)
+    print('Validating... ')
+
+    y = y.T
+    X_train = X[:int(len(X)/2)]
+    y_train = y[:int(len(y)/2)].T
+    X_test = X[int(len(X)/2):]
+    y_test = y[int(len(y)/2):].T
+
+    print('\nRun 1')
+    train_regression(X_train,y_train,True)
+    acc_1,F1_1 = test_regression(X_test,y_test,True)
+
+    print('\nRun 2')
+    train_regression(X_test,y_test,True)
+    acc_2,F1_2 = test_regression(X_train,y_train,True)
+
+    print('\nAverage Accuracy:', np.mean([acc_1,acc_2]))
+    print('Average F1:', np.mean([F1_1,F1_2]))
 
 
 
@@ -179,11 +189,15 @@ if __name__ == '__main__':
     command = command.replace('-','').lower()
     data_file = open(file_str,'r')
 
+    # Read in train data
+    X,y = read_csv(data_file)
+
     if command == 'train':
-        train_regression(data_file)
+        train_regression(X,y,False)
     elif command == 'test':
-        test_regression(data_file)
+        test_regression(X,y,False)
     elif command == 'validate':
-        validate_regression(data_file)
+        validate_regression(X,y)
     else:
-        print('Expected "train" or "test", got ' + command)
+        print('Expected "train" or "validate" or "test", got '
+        + command)
