@@ -3,6 +3,7 @@ import csv
 import numpy as np
 import random
 from numpy.linalg import eig
+import collections
 
 '''
 Trains on the given csv
@@ -16,7 +17,7 @@ def train_regression(data_file):
 
     # Add a bias
     bias = np.ones(shape = y.shape)
-    #X = np.concatenate((X,bias.T),axis=1)
+    X = np.concatenate((X,bias.T),axis=1)
 
     # train
     A = np.dot(X.T, X)
@@ -61,6 +62,10 @@ def test_regression(data_file):
         w.append( float(line) )
     w = np.array(w)
 
+    # Adding Bias
+    bias = w[-1]
+    w = w[:-1]
+
     # Read in test data
     X,y_actual = read_csv(data_file)
 
@@ -72,7 +77,7 @@ def test_regression(data_file):
     # Predictions
     for i in range(len(X)):
         x_i = X[i]
-        y_pred[i] = np.dot(w, x_i.T)
+        y_pred[i] = np.dot(w, x_i.T) + bias
         y_pred[i] = activation(y_pred[i])
 
     print('Guess Counts:',collections.Counter(y_pred))
