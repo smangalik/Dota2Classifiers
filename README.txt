@@ -22,5 +22,5 @@ DESCRIPTION
       reads a file with the default model file name.
       Prints out Accuracy, Precision, Recall, and F1
     -validate
-      Runs k-fold (default k=5) validation and returns
+      Runs k-fold (default k=2) validation and returns
       individual and mean accuracy for each run
